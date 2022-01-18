@@ -1,0 +1,3 @@
+mutation EnterExistingRoom($name:String!) {
+  enterExistingRoom(name:$name)
+}

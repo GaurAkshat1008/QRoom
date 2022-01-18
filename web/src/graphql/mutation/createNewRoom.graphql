@@ -1,0 +1,9 @@
+mutation NewRoom($input:roomVar!, $token:String!){
+  newRoom(input:$input, token:$token){
+    id
+    owner
+    name
+    token
+    createdAt
+  }
+}
