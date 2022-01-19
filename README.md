@@ -5,7 +5,7 @@
 
 ### Backend
 
-1. Node
+1. Node ![node](https://pluralsight2.imgix.net/paths/images/nodejs-45adbe594d.png)
 2. Express
 3. ApolloServer
 4. Graphql
