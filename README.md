@@ -1,11 +1,14 @@
 # QRoom
 
+## Description
+
+An idea to connect people with each other easily with just a click of a button
 
 ## Stacks used in the project
 
 ### Backend
 
-1. Node
+1. Node (node)
 2. Express
 3. ApolloServer
 4. Graphql
