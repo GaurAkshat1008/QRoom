@@ -15,7 +15,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UserResolver = void 0;
+exports.UserResolver = exports.FieldError = void 0;
 const argon2_1 = __importDefault(require("argon2"));
 const type_graphql_1 = require("type-graphql");
 const typeorm_1 = require("typeorm");
@@ -36,6 +36,7 @@ __decorate([
 FieldError = __decorate([
     (0, type_graphql_1.ObjectType)()
 ], FieldError);
+exports.FieldError = FieldError;
 let UserResponse = class UserResponse {
 };
 __decorate([
@@ -55,6 +56,13 @@ let UserResolver = class UserResolver {
             return null;
         }
         return User_1.User.findOne(req.session.userId);
+    }
+    async userById(id) {
+        const user = await User_1.User.findOne(id);
+        if (!user) {
+            return null;
+        }
+        return user;
     }
     async register(options, { req }) {
         const errors = (0, validateRegister_1.validateRegister)(options);
@@ -140,6 +148,13 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", Promise)
 ], UserResolver.prototype, "me", null);
+__decorate([
+    (0, type_graphql_1.Mutation)(() => User_1.User, { nullable: true }),
+    __param(0, (0, type_graphql_1.Arg)("id", () => type_graphql_1.Int)),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Number]),
+    __metadata("design:returntype", Promise)
+], UserResolver.prototype, "userById", null);
 __decorate([
     (0, type_graphql_1.Mutation)(() => UserResponse),
     __param(0, (0, type_graphql_1.Arg)("options")),

@@ -3,21 +3,23 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const apollo_server_express_1 = require("apollo-server-express");
 const apollo_server_core_1 = require("apollo-server-core");
-const express_1 = __importDefault(require("express"));
-const typeorm_1 = require("typeorm");
-const type_graphql_1 = require("type-graphql");
-const hello_1 = require("./resolvers/hello");
-const constants_1 = require("./constants");
-const User_1 = require("./entities/User");
-const user_1 = require("./resolvers/user");
+const apollo_server_express_1 = require("apollo-server-express");
 const connect_redis_1 = __importDefault(require("connect-redis"));
+const cors_1 = __importDefault(require("cors"));
+const express_1 = __importDefault(require("express"));
 const express_session_1 = __importDefault(require("express-session"));
 const ioredis_1 = __importDefault(require("ioredis"));
-const cors_1 = __importDefault(require("cors"));
-const room_1 = require("./resolvers/room");
+const type_graphql_1 = require("type-graphql");
+const typeorm_1 = require("typeorm");
+const constants_1 = require("./constants");
+const Messages_1 = require("./entities/Messages");
 const Room_1 = require("./entities/Room");
+const User_1 = require("./entities/User");
+const hello_1 = require("./resolvers/hello");
+const messages_1 = require("./resolvers/messages");
+const room_1 = require("./resolvers/room");
+const user_1 = require("./resolvers/user");
 const main = async () => {
     const conn = await (0, typeorm_1.createConnection)({
         type: "postgres",
@@ -26,7 +28,7 @@ const main = async () => {
         password: "akshat",
         logging: !constants_1.__prod__,
         synchronize: true,
-        entities: [User_1.User, Room_1.Room],
+        entities: [User_1.User, Room_1.Room, Messages_1.Messages],
     });
     await conn.runMigrations();
     const app = (0, express_1.default)();
@@ -55,7 +57,7 @@ const main = async () => {
     const server = new apollo_server_express_1.ApolloServer({
         plugins: [(0, apollo_server_core_1.ApolloServerPluginLandingPageGraphQLPlayground)()],
         schema: await (0, type_graphql_1.buildSchema)({
-            resolvers: [hello_1.HelloResolver, user_1.UserResolver, room_1.RoomResolver],
+            resolvers: [hello_1.HelloResolver, user_1.UserResolver, room_1.RoomResolver, messages_1.MessageResolver],
             validate: false,
         }),
         context: ({ req, res }) => ({

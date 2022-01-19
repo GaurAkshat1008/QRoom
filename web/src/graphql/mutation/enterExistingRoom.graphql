@@ -1,3 +1,9 @@
-mutation EnterExistingRoom($name:String!) {
-  enterExistingRoom(name:$name)
+mutation enterExistingRoom($name:String!, $password:String!){
+  enterExistingRoom(name:$name, password:$password){
+    errors{
+      field
+      message
+    }
+    link
+  }
 }

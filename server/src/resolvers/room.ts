@@ -10,23 +10,16 @@ import {
   Resolver,
   UseMiddleware
 } from "type-graphql";
-import { CREATE_ROOM } from "../constants";
 import { Room } from "../entities/Room";
 import { isAuth } from "../middelwares/isAuth";
 import { MyContext } from "../types";
+import { FieldError } from "./user";
 
-@ObjectType()
-class FieldError{
-  @Field()
-  field: string;
-  @Field()
-  message: string;
-}
 
 @ObjectType()
 class LinkProvider{
   @Field(() => [FieldError], {nullable:true})
-  error?:FieldError[]
+  errors?:FieldError[]
   @Field({nullable:true})
   link?:string
 }
@@ -34,7 +27,7 @@ class LinkProvider{
 @ObjectType()
 class PasswordMatcher{
   @Field(() => [FieldError], {nullable:true})
-  error?: FieldError[]
+  errors?: FieldError[]
   @Field(() => Boolean, {nullable:true})
   isThere?:boolean
 }
@@ -81,53 +74,58 @@ export class RoomResolver {
     @Arg("name") name: string,
     @Arg("password") password: string,
     @Arg("token") token:string,
-    @Ctx() {redis}:MyContext
   ) {
     const room = await Room.findOne({where: {name, password}})
     if(!room){
       // no room found
       return "/" 
     }
-    await redis.set(
-      CREATE_ROOM + token,
-      room.id,
-      "ex",
-      1000 * 60 * 60 * 24
-    ) // available for 1 day
       return `http://localhost:3000/rooms/${token}`
   }
 
 
-  @Mutation(() => String)
+  @Mutation(() => LinkProvider)
   @UseMiddleware(isAuth)
   async enterExistingRoom(
     @Arg("name") name: string,
+    @Arg("password") password:string
   ):Promise<LinkProvider>{
     const room = await Room.findOne({where:{name}})
     if(!room){
       return {
-        error:[
+        errors:[
           {
-            field:"name",
+            field:"roomName",
             message:"no room found"
+          }
+        ]
+      }
+    }
+    else if(room.password !== password){
+      return{
+        errors:[
+          {
+            field:"password",
+            message:"password is not correct"
           }
         ]
       }
     }
     return {link:`http://localhost:3000/rooms/${room.token}`} 
   }
-  @Mutation(() => Boolean)
+  @Mutation(() => PasswordMatcher)
   @UseMiddleware(isAuth)
   async matchPassword(
     @Arg("token") token:string,
-    @Arg("password") password: string
+    @Arg("password") password: string,
+    @Ctx() {req}: MyContext
   ):Promise<PasswordMatcher>{
     const room = await Room.findOne({where: {token}})
     if(!room){
       return {
-        error:[
+        errors:[
           {
-            field:"room",
+            field:"password",
             message:"room not found"
           }
         ]
@@ -135,12 +133,13 @@ export class RoomResolver {
     }    
     if(room.password !== password){
       return {
-        error:[{
+        errors:[{
           field:"password",
           message:"password incorrect"
         }]
       }
     }
+    req.session.roomId = room.id
     return {isThere:true}
   }
   @Mutation(() => Boolean)

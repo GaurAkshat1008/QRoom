@@ -28,16 +28,38 @@ export type FieldError = {
   message: Scalars['String'];
 };
 
+export type LinkProvider = {
+  __typename?: 'LinkProvider';
+  errors?: Maybe<Array<FieldError>>;
+  link?: Maybe<Scalars['String']>;
+};
+
+export type Messages = {
+  __typename?: 'Messages';
+  id: Scalars['Float'];
+  message: Scalars['String'];
+  owner: Scalars['Float'];
+  roomToken: Scalars['String'];
+};
+
 export type Mutation = {
   __typename?: 'Mutation';
+  createMessage: Messages;
   deleteRoom: Scalars['Boolean'];
-  enterExistingRoom: Scalars['String'];
+  enterExistingRoom: LinkProvider;
   enterRoom: Scalars['String'];
   login: UserResponse;
   logout: Scalars['Boolean'];
-  matchPassword: Scalars['Boolean'];
+  matchPassword: PasswordMatcher;
   newRoom: Room;
   register: UserResponse;
+  userById?: Maybe<User>;
+};
+
+
+export type MutationCreateMessageArgs = {
+  text: Scalars['String'];
+  token: Scalars['String'];
 };
 
 
@@ -48,6 +70,7 @@ export type MutationDeleteRoomArgs = {
 
 export type MutationEnterExistingRoomArgs = {
   name: Scalars['String'];
+  password: Scalars['String'];
 };
 
 
@@ -80,12 +103,29 @@ export type MutationRegisterArgs = {
   options: Auths;
 };
 
+
+export type MutationUserByIdArgs = {
+  id: Scalars['Int'];
+};
+
+export type PasswordMatcher = {
+  __typename?: 'PasswordMatcher';
+  errors?: Maybe<Array<FieldError>>;
+  isThere?: Maybe<Scalars['Boolean']>;
+};
+
 export type Query = {
   __typename?: 'Query';
   hello: Scalars['String'];
   me?: Maybe<User>;
+  messagesByRoom: Array<Messages>;
   room?: Maybe<Room>;
   rooms: Array<Room>;
+};
+
+
+export type QueryMessagesByRoomArgs = {
+  token: Scalars['String'];
 };
 
 
@@ -99,7 +139,6 @@ export type Room = {
   id: Scalars['Float'];
   name: Scalars['String'];
   owner: Scalars['Float'];
-  password: Scalars['String'];
   token: Scalars['String'];
 };
 
@@ -139,10 +178,11 @@ export type DeleteRoomMutation = { __typename?: 'Mutation', deleteRoom: boolean 
 
 export type EnterExistingRoomMutationVariables = Exact<{
   name: Scalars['String'];
+  password: Scalars['String'];
 }>;
 
 
-export type EnterExistingRoomMutation = { __typename?: 'Mutation', enterExistingRoom: string };
+export type EnterExistingRoomMutation = { __typename?: 'Mutation', enterExistingRoom: { __typename?: 'LinkProvider', link?: string | null | undefined, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined } };
 
 export type EnterRoomMutationVariables = Exact<{
   name: Scalars['String'];
@@ -152,6 +192,13 @@ export type EnterRoomMutationVariables = Exact<{
 
 
 export type EnterRoomMutation = { __typename?: 'Mutation', enterRoom: string };
+
+export type UserByIdMutationVariables = Exact<{
+  id: Scalars['Int'];
+}>;
+
+
+export type UserByIdMutation = { __typename?: 'Mutation', userById?: { __typename?: 'User', username: string } | null | undefined };
 
 export type LoginMutationVariables = Exact<{
   username: Scalars['String'];
@@ -167,12 +214,20 @@ export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
 export type LogoutMutation = { __typename?: 'Mutation', logout: boolean };
 
 export type MatchPasswordMutationVariables = Exact<{
-  token: Scalars['String'];
   password: Scalars['String'];
+  token: Scalars['String'];
 }>;
 
 
-export type MatchPasswordMutation = { __typename?: 'Mutation', matchPassword: boolean };
+export type MatchPasswordMutation = { __typename?: 'Mutation', matchPassword: { __typename?: 'PasswordMatcher', isThere?: boolean | null | undefined, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined } };
+
+export type CreateMessageMutationVariables = Exact<{
+  token: Scalars['String'];
+  text: Scalars['String'];
+}>;
+
+
+export type CreateMessageMutation = { __typename?: 'Mutation', createMessage: { __typename?: 'Messages', id: number, owner: number, roomToken: string, message: string } };
 
 export type RegisterMutationVariables = Exact<{
   username: Scalars['String'];
@@ -181,6 +236,13 @@ export type RegisterMutationVariables = Exact<{
 
 
 export type RegisterMutation = { __typename?: 'Mutation', register: { __typename?: 'UserResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined, user?: { __typename?: 'User', id: number, username: string, createdAt: string, updatedAt: string } | null | undefined } };
+
+export type MessagesByRoomQueryVariables = Exact<{
+  token: Scalars['String'];
+}>;
+
+
+export type MessagesByRoomQuery = { __typename?: 'Query', messagesByRoom: Array<{ __typename?: 'Messages', id: number, owner: number, roomToken: string, message: string }> };
 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -220,8 +282,14 @@ export function useDeleteRoomMutation() {
   return Urql.useMutation<DeleteRoomMutation, DeleteRoomMutationVariables>(DeleteRoomDocument);
 };
 export const EnterExistingRoomDocument = gql`
-    mutation EnterExistingRoom($name: String!) {
-  enterExistingRoom(name: $name)
+    mutation enterExistingRoom($name: String!, $password: String!) {
+  enterExistingRoom(name: $name, password: $password) {
+    errors {
+      field
+      message
+    }
+    link
+  }
 }
     `;
 
@@ -236,6 +304,17 @@ export const EnterRoomDocument = gql`
 
 export function useEnterRoomMutation() {
   return Urql.useMutation<EnterRoomMutation, EnterRoomMutationVariables>(EnterRoomDocument);
+};
+export const UserByIdDocument = gql`
+    mutation UserById($id: Int!) {
+  userById(id: $id) {
+    username
+  }
+}
+    `;
+
+export function useUserByIdMutation() {
+  return Urql.useMutation<UserByIdMutation, UserByIdMutationVariables>(UserByIdDocument);
 };
 export const LoginDocument = gql`
     mutation Login($username: String!, $password: String!) {
@@ -267,13 +346,33 @@ export function useLogoutMutation() {
   return Urql.useMutation<LogoutMutation, LogoutMutationVariables>(LogoutDocument);
 };
 export const MatchPasswordDocument = gql`
-    mutation MatchPassword($token: String!, $password: String!) {
-  matchPassword(token: $token, password: $password)
+    mutation MatchPassword($password: String!, $token: String!) {
+  matchPassword(password: $password, token: $token) {
+    errors {
+      field
+      message
+    }
+    isThere
+  }
 }
     `;
 
 export function useMatchPasswordMutation() {
   return Urql.useMutation<MatchPasswordMutation, MatchPasswordMutationVariables>(MatchPasswordDocument);
+};
+export const CreateMessageDocument = gql`
+    mutation CreateMessage($token: String!, $text: String!) {
+  createMessage(token: $token, text: $text) {
+    id
+    owner
+    roomToken
+    message
+  }
+}
+    `;
+
+export function useCreateMessageMutation() {
+  return Urql.useMutation<CreateMessageMutation, CreateMessageMutationVariables>(CreateMessageDocument);
 };
 export const RegisterDocument = gql`
     mutation Register($username: String!, $password: String!) {
@@ -294,6 +393,20 @@ export const RegisterDocument = gql`
 
 export function useRegisterMutation() {
   return Urql.useMutation<RegisterMutation, RegisterMutationVariables>(RegisterDocument);
+};
+export const MessagesByRoomDocument = gql`
+    query MessagesByRoom($token: String!) {
+  messagesByRoom(token: $token) {
+    id
+    owner
+    roomToken
+    message
+  }
+}
+    `;
+
+export function useMessagesByRoomQuery(options: Omit<Urql.UseQueryArgs<MessagesByRoomQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<MessagesByRoomQuery>({ query: MessagesByRoomDocument, ...options });
 };
 export const MeDocument = gql`
     query Me {

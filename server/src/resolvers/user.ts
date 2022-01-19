@@ -1,5 +1,5 @@
 import argon2  from "argon2";
-import { Arg, Ctx, Field, Mutation, ObjectType, Query, Resolver } from "type-graphql";
+import { Arg, Ctx, Field, Int, Mutation, ObjectType, Query, Resolver } from "type-graphql";
 import { getConnection } from "typeorm";
 import { COOKIE_NAME } from "../constants";
 import { User } from "../entities/User";
@@ -8,7 +8,7 @@ import { Auths } from "../utils/auths";
 import { validateRegister } from "../utils/validateRegister";
 
 @ObjectType()
-class FieldError {
+export class FieldError {
   @Field()
   field: string;
   @Field()
@@ -34,6 +34,17 @@ export class UserResolver {
       return null
     }
     return User.findOne(req.session.userId)
+  }
+
+  @Mutation(() => User, {nullable:true})
+  async userById(
+    @Arg("id", ()=>Int) id:number
+  ){
+    const user = await User.findOne(id)
+    if(!user){
+      return null
+    }
+    return user
   }
 
   @Mutation(() => UserResponse)

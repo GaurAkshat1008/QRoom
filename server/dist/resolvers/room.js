@@ -14,28 +14,15 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.RoomResolver = void 0;
 const type_graphql_1 = require("type-graphql");
-const constants_1 = require("../constants");
 const Room_1 = require("../entities/Room");
 const isAuth_1 = require("../middelwares/isAuth");
-let FieldError = class FieldError {
-};
-__decorate([
-    (0, type_graphql_1.Field)(),
-    __metadata("design:type", String)
-], FieldError.prototype, "field", void 0);
-__decorate([
-    (0, type_graphql_1.Field)(),
-    __metadata("design:type", String)
-], FieldError.prototype, "message", void 0);
-FieldError = __decorate([
-    (0, type_graphql_1.ObjectType)()
-], FieldError);
+const user_1 = require("./user");
 let LinkProvider = class LinkProvider {
 };
 __decorate([
-    (0, type_graphql_1.Field)(() => [FieldError], { nullable: true }),
+    (0, type_graphql_1.Field)(() => [user_1.FieldError], { nullable: true }),
     __metadata("design:type", Array)
-], LinkProvider.prototype, "error", void 0);
+], LinkProvider.prototype, "errors", void 0);
 __decorate([
     (0, type_graphql_1.Field)({ nullable: true }),
     __metadata("design:type", String)
@@ -46,9 +33,9 @@ LinkProvider = __decorate([
 let PasswordMatcher = class PasswordMatcher {
 };
 __decorate([
-    (0, type_graphql_1.Field)(() => [FieldError], { nullable: true }),
+    (0, type_graphql_1.Field)(() => [user_1.FieldError], { nullable: true }),
     __metadata("design:type", Array)
-], PasswordMatcher.prototype, "error", void 0);
+], PasswordMatcher.prototype, "errors", void 0);
 __decorate([
     (0, type_graphql_1.Field)(() => Boolean, { nullable: true }),
     __metadata("design:type", Boolean)
@@ -79,35 +66,44 @@ let RoomResolver = class RoomResolver {
     async newRoom(input, token, { req }) {
         return Room_1.Room.create(Object.assign(Object.assign({}, input), { owner: req.session.userId, token: token })).save();
     }
-    async enterRoom(name, password, token, { redis }) {
+    async enterRoom(name, password, token) {
         const room = await Room_1.Room.findOne({ where: { name, password } });
         if (!room) {
             return "/";
         }
-        await redis.set(constants_1.CREATE_ROOM + token, room.id, "ex", 1000 * 60 * 60 * 24);
         return `http://localhost:3000/rooms/${token}`;
     }
-    async enterExistingRoom(name) {
+    async enterExistingRoom(name, password) {
         const room = await Room_1.Room.findOne({ where: { name } });
         if (!room) {
             return {
-                error: [
+                errors: [
                     {
-                        field: "name",
+                        field: "roomName",
                         message: "no room found"
+                    }
+                ]
+            };
+        }
+        else if (room.password !== password) {
+            return {
+                errors: [
+                    {
+                        field: "password",
+                        message: "password is not correct"
                     }
                 ]
             };
         }
         return { link: `http://localhost:3000/rooms/${room.token}` };
     }
-    async matchPassword(token, password) {
+    async matchPassword(token, password, { req }) {
         const room = await Room_1.Room.findOne({ where: { token } });
         if (!room) {
             return {
-                error: [
+                errors: [
                     {
-                        field: "room",
+                        field: "password",
                         message: "room not found"
                     }
                 ]
@@ -115,12 +111,13 @@ let RoomResolver = class RoomResolver {
         }
         if (room.password !== password) {
             return {
-                error: [{
+                errors: [{
                         field: "password",
                         message: "password incorrect"
                     }]
             };
         }
+        req.session.roomId = room.id;
         return { isThere: true };
     }
     async deleteRoom(id, { req }) {
@@ -164,26 +161,27 @@ __decorate([
     __param(0, (0, type_graphql_1.Arg)("name")),
     __param(1, (0, type_graphql_1.Arg)("password")),
     __param(2, (0, type_graphql_1.Arg)("token")),
-    __param(3, (0, type_graphql_1.Ctx)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String, String, Object]),
+    __metadata("design:paramtypes", [String, String, String]),
     __metadata("design:returntype", Promise)
 ], RoomResolver.prototype, "enterRoom", null);
 __decorate([
-    (0, type_graphql_1.Mutation)(() => String),
+    (0, type_graphql_1.Mutation)(() => LinkProvider),
     (0, type_graphql_1.UseMiddleware)(isAuth_1.isAuth),
     __param(0, (0, type_graphql_1.Arg)("name")),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", Promise)
-], RoomResolver.prototype, "enterExistingRoom", null);
-__decorate([
-    (0, type_graphql_1.Mutation)(() => Boolean),
-    (0, type_graphql_1.UseMiddleware)(isAuth_1.isAuth),
-    __param(0, (0, type_graphql_1.Arg)("token")),
     __param(1, (0, type_graphql_1.Arg)("password")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String, String]),
+    __metadata("design:returntype", Promise)
+], RoomResolver.prototype, "enterExistingRoom", null);
+__decorate([
+    (0, type_graphql_1.Mutation)(() => PasswordMatcher),
+    (0, type_graphql_1.UseMiddleware)(isAuth_1.isAuth),
+    __param(0, (0, type_graphql_1.Arg)("token")),
+    __param(1, (0, type_graphql_1.Arg)("password")),
+    __param(2, (0, type_graphql_1.Ctx)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [String, String, Object]),
     __metadata("design:returntype", Promise)
 ], RoomResolver.prototype, "matchPassword", null);
 __decorate([
