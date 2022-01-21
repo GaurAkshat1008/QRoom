@@ -57,4 +57,10 @@ Live messaging with anyone having them in the same room as yourself
 ![login](https://github.com/jueviole-grace/qRoom/blob/master/github%20assets/login.png?raw=true)
 
 ## Home Page
-![Homae Page](https://github.com/jueviole-grace/qRoom/blob/master/github%20assets/home%20page.png?raw=true)
+![Home Page](https://github.com/jueviole-grace/qRoom/blob/master/github%20assets/home%20page.png?raw=true)
+
+## Room Window 
+![room window](https://github.com/jueviole-grace/qRoom/blob/master/github%20assets/room%20window.png?raw=true)
+
+## Messages
+![Messaes](https://github.com/jueviole-grace/qRoom/blob/master/github%20assets/message.png?raw=true)
