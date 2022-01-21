@@ -42,6 +42,7 @@ let MessageResolver = class MessageResolver {
 };
 __decorate([
     (0, type_graphql_1.Query)(() => [Messages_1.Messages]),
+    (0, type_graphql_1.UseMiddleware)(isAuth_1.isAuth),
     __param(0, (0, type_graphql_1.Arg)("token")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),

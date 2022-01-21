@@ -134,6 +134,7 @@ let RoomResolver = class RoomResolver {
 };
 __decorate([
     (0, type_graphql_1.Query)(() => Room_1.Room, { nullable: true }),
+    (0, type_graphql_1.UseMiddleware)(isAuth_1.isAuth),
     __param(0, (0, type_graphql_1.Arg)("token")),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", [String]),
@@ -141,6 +142,7 @@ __decorate([
 ], RoomResolver.prototype, "room", null);
 __decorate([
     (0, type_graphql_1.Query)(() => [Room_1.Room]),
+    (0, type_graphql_1.UseMiddleware)(isAuth_1.isAuth),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", Promise)

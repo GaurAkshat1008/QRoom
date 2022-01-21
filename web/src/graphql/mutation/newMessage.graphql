@@ -1,8 +1,5 @@
 mutation CreateMessage($token:String!, $text:String!){
   createMessage(token:$token, text:$text){
-    id
-    owner
-    roomToken
-    message
+    ...MessageSnippet
   }
 }

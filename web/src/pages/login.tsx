@@ -7,6 +7,8 @@ import { toErrorMap } from "../utils/errorMap";
 import NextLink from 'next/link'
 import { Wrapper } from "../components/wrapper";
 import { InputField } from "../components/inputField";
+import { withUrqlClient } from "next-urql";
+import { createURQLClient } from "../utils/createURQLClient";
 
 const Login: React.FC<{}> = ({}) => {
   const router = useRouter();
@@ -65,4 +67,4 @@ const Login: React.FC<{}> = ({}) => {
   );
 };
 
-export default Login;
+export default withUrqlClient(createURQLClient)(Login);

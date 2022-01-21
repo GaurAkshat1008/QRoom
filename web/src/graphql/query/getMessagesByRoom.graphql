@@ -1,8 +1,5 @@
 query MessagesByRoom($token:String!)  {
   messagesByRoom(token:$token){
-    id
-		owner
-    roomToken
- 		message
+    ...MessageSnippet
 }
 }

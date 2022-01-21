@@ -1,0 +1,6 @@
+fragment MessageSnippet on Messages{
+  id
+		owner
+    roomToken
+ 		message
+}

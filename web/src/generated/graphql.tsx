@@ -161,6 +161,14 @@ export type RoomVar = {
   password: Scalars['String'];
 };
 
+export type AuthSnippetFragment = { __typename?: 'User', id: number, username: string, createdAt: string, updatedAt: string };
+
+export type RegularErrorFragment = { __typename?: 'FieldError', field: string, message: string };
+
+export type MessageSnippetFragment = { __typename?: 'Messages', id: number, owner: number, roomToken: string, message: string };
+
+export type RoomSnippetFragment = { __typename?: 'Room', id: number, owner: number, name: string, token: string, createdAt: any };
+
 export type NewRoomMutationVariables = Exact<{
   input: RoomVar;
   token: Scalars['String'];
@@ -254,20 +262,46 @@ export type RoomQueryVariables = Exact<{
 }>;
 
 
-export type RoomQuery = { __typename?: 'Query', room?: { __typename?: 'Room', id: number, owner: number, name: string, createdAt: any } | null | undefined };
+export type RoomQuery = { __typename?: 'Query', room?: { __typename?: 'Room', id: number, owner: number, name: string, token: string, createdAt: any } | null | undefined };
 
-
+export const AuthSnippetFragmentDoc = gql`
+    fragment AuthSnippet on User {
+  id
+  username
+  createdAt
+  updatedAt
+}
+    `;
+export const RegularErrorFragmentDoc = gql`
+    fragment RegularError on FieldError {
+  field
+  message
+}
+    `;
+export const MessageSnippetFragmentDoc = gql`
+    fragment MessageSnippet on Messages {
+  id
+  owner
+  roomToken
+  message
+}
+    `;
+export const RoomSnippetFragmentDoc = gql`
+    fragment RoomSnippet on Room {
+  id
+  owner
+  name
+  token
+  createdAt
+}
+    `;
 export const NewRoomDocument = gql`
     mutation NewRoom($input: roomVar!, $token: String!) {
   newRoom(input: $input, token: $token) {
-    id
-    owner
-    name
-    token
-    createdAt
+    ...RoomSnippet
   }
 }
-    `;
+    ${RoomSnippetFragmentDoc}`;
 
 export function useNewRoomMutation() {
   return Urql.useMutation<NewRoomMutation, NewRoomMutationVariables>(NewRoomDocument);
@@ -320,18 +354,15 @@ export const LoginDocument = gql`
     mutation Login($username: String!, $password: String!) {
   login(username: $username, password: $password) {
     errors {
-      field
-      message
+      ...RegularError
     }
     user {
-      id
-      username
-      createdAt
-      updatedAt
+      ...AuthSnippet
     }
   }
 }
-    `;
+    ${RegularErrorFragmentDoc}
+${AuthSnippetFragmentDoc}`;
 
 export function useLoginMutation() {
   return Urql.useMutation<LoginMutation, LoginMutationVariables>(LoginDocument);
@@ -349,13 +380,12 @@ export const MatchPasswordDocument = gql`
     mutation MatchPassword($password: String!, $token: String!) {
   matchPassword(password: $password, token: $token) {
     errors {
-      field
-      message
+      ...RegularError
     }
     isThere
   }
 }
-    `;
+    ${RegularErrorFragmentDoc}`;
 
 export function useMatchPasswordMutation() {
   return Urql.useMutation<MatchPasswordMutation, MatchPasswordMutationVariables>(MatchPasswordDocument);
@@ -363,13 +393,10 @@ export function useMatchPasswordMutation() {
 export const CreateMessageDocument = gql`
     mutation CreateMessage($token: String!, $text: String!) {
   createMessage(token: $token, text: $text) {
-    id
-    owner
-    roomToken
-    message
+    ...MessageSnippet
   }
 }
-    `;
+    ${MessageSnippetFragmentDoc}`;
 
 export function useCreateMessageMutation() {
   return Urql.useMutation<CreateMessageMutation, CreateMessageMutationVariables>(CreateMessageDocument);
@@ -378,18 +405,15 @@ export const RegisterDocument = gql`
     mutation Register($username: String!, $password: String!) {
   register(options: {username: $username, password: $password}) {
     errors {
-      field
-      message
+      ...RegularError
     }
     user {
-      id
-      username
-      createdAt
-      updatedAt
+      ...AuthSnippet
     }
   }
 }
-    `;
+    ${RegularErrorFragmentDoc}
+${AuthSnippetFragmentDoc}`;
 
 export function useRegisterMutation() {
   return Urql.useMutation<RegisterMutation, RegisterMutationVariables>(RegisterDocument);
@@ -397,13 +421,10 @@ export function useRegisterMutation() {
 export const MessagesByRoomDocument = gql`
     query MessagesByRoom($token: String!) {
   messagesByRoom(token: $token) {
-    id
-    owner
-    roomToken
-    message
+    ...MessageSnippet
   }
 }
-    `;
+    ${MessageSnippetFragmentDoc}`;
 
 export function useMessagesByRoomQuery(options: Omit<Urql.UseQueryArgs<MessagesByRoomQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<MessagesByRoomQuery>({ query: MessagesByRoomDocument, ...options });
@@ -423,13 +444,10 @@ export function useMeQuery(options: Omit<Urql.UseQueryArgs<MeQueryVariables>, 'q
 export const RoomDocument = gql`
     query Room($token: String!) {
   room(token: $token) {
-    id
-    owner
-    name
-    createdAt
+    ...RoomSnippet
   }
 }
-    `;
+    ${RoomSnippetFragmentDoc}`;
 
 export function useRoomQuery(options: Omit<Urql.UseQueryArgs<RoomQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<RoomQuery>({ query: RoomDocument, ...options });

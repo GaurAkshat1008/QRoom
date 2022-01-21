@@ -1,8 +1,5 @@
 query Room($token:String!){
   room(token:$token){
-    id
-    owner
-    name
-    createdAt
+    ...RoomSnippet
   }
 }

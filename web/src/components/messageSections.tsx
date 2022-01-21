@@ -1,5 +1,6 @@
 import { Box, Button, Flex } from '@chakra-ui/react';
 import { Form, Formik } from 'formik';
+import Router from 'next/router';
 import React from 'react'
 import { Exact, useCreateMessageMutation, useMeQuery, useMessagesByRoomQuery, useUserByIdMutation} from '../generated/graphql';
 import { InputField } from './inputField';
@@ -31,7 +32,7 @@ export const MessageSections: React.FC<token> = ({token}) => {
     return (
       <Flex flexDirection={'column'}>
         <Box flex={'0.9'} backgroundColor={'green.100'} p={2} overflowX={'hidden'}>
-          <Box height={'50vh'} p={4}>
+          <Box height={'60vh'} p={4}>
            {body} 
           </Box>
         </Box>
@@ -43,6 +44,7 @@ export const MessageSections: React.FC<token> = ({token}) => {
               if(values.text !== ' '){
                 if(!!(values.text).trim()){
                   const message = await newMessage({token:token, text:values.text})
+                  // Router.reload()
                 }
                 else{
                   setErrors({text:"Cannot be empty"})

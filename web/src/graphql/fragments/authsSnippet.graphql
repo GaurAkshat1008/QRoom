@@ -1,0 +1,6 @@
+fragment AuthSnippet on User{
+  id
+      username
+      createdAt
+      updatedAt
+}

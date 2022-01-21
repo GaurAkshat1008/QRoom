@@ -20,8 +20,8 @@ const main = async () => {
   const conn = await createConnection({
     type: "postgres",
     database: "whatsapp",
-    username: "__username__",
-    password: "__password__",
+    username: "whatsapp",
+    password: "akshat",
     logging: !__prod__,
     synchronize: true,
     entities: [User, Room, Messages],

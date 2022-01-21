@@ -43,6 +43,7 @@ class roomVar {
 @Resolver(Room)
 export class RoomResolver {
  @Query(() => Room, {nullable:true})
+ @UseMiddleware(isAuth)
  async room(
   @Arg("token") token:string
  ){
@@ -50,6 +51,7 @@ export class RoomResolver {
  }
 
   @Query(() => [Room])
+  @UseMiddleware(isAuth)
   async rooms() {
     return Room.find({});
   }

@@ -8,6 +8,7 @@ import { MyContext } from "../types";
 @Resolver(Messages)
 export class MessageResolver{
   @Query(() => [Messages])
+  @UseMiddleware(isAuth)
   async messagesByRoom(
     @Arg("token") token:string
   ){

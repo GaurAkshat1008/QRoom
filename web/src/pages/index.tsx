@@ -12,6 +12,8 @@ import { Form, Formik } from "formik";
 import { InputField } from "../components/inputField";
 import { Layout } from "../components/layout";
 import { toErrorMap } from "../utils/errorMap";
+import { withUrqlClient } from "next-urql";
+import { createURQLClient } from "../utils/createURQLClient";
 
 const Index: React.FC<{}> = ({}) => {
   const router = useRouter();
@@ -156,4 +158,4 @@ const Index: React.FC<{}> = ({}) => {
   );
 };
 
-export default Index;
+export default withUrqlClient(createURQLClient)(Index);
