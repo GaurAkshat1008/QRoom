@@ -24,7 +24,7 @@ export const MessageBox: React.FC<messageBoxProps> = ({
       borderRadius={10}
       backgroundColor={variant === "me" ? "orange.400" : "blue.900"}
     >
-        <Box ml={'auto'}>{author}</Box>
+        <Box ml={'auto'}>~{author}</Box>
       <Box>{children}</Box>
     </Flex>
   );
