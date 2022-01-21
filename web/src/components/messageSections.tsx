@@ -32,7 +32,7 @@ export const MessageSections: React.FC<token> = ({token}) => {
     return (
       <Flex flexDirection={'column'}>
         <Box flex={'0.9'} backgroundColor={'green.100'} p={2} overflowX={'hidden'}>
-          <Box height={'60vh'} p={4}>
+          <Box id='holder' height={'60vh'} p={4}>
            {body} 
           </Box>
         </Box>
@@ -44,7 +44,6 @@ export const MessageSections: React.FC<token> = ({token}) => {
               if(values.text !== ' '){
                 if(!!(values.text).trim()){
                   const message = await newMessage({token:token, text:values.text})
-                  // Router.reload()
                 }
                 else{
                   setErrors({text:"Cannot be empty"})

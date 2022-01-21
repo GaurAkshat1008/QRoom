@@ -24,10 +24,13 @@ const Room: NextPage<{ token: string }> = ({ token }) => {
   const [, deleteRoom] = useDeleteRoomMutation();
   let body = null;
   if (!meData) {
-    router.push('/login')
+    router.replace('/login')
   }
   if (roomData.fetching) {
     
+  }
+  if(!roomData){
+    router.replace('/')
   }
   if (roomData.data) {
     body = (
