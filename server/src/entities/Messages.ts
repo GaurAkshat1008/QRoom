@@ -10,7 +10,7 @@ export class Messages extends BaseEntity{
 
   @Field()
   @Column()
-  owner!: number
+  owner!: string
 
   @Field()
   @Column()

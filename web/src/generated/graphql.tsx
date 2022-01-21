@@ -38,7 +38,7 @@ export type Messages = {
   __typename?: 'Messages';
   id: Scalars['Float'];
   message: Scalars['String'];
-  owner: Scalars['Float'];
+  owner: Scalars['String'];
   roomToken: Scalars['String'];
 };
 
@@ -165,7 +165,7 @@ export type AuthSnippetFragment = { __typename?: 'User', id: number, username: s
 
 export type RegularErrorFragment = { __typename?: 'FieldError', field: string, message: string };
 
-export type MessageSnippetFragment = { __typename?: 'Messages', id: number, owner: number, roomToken: string, message: string };
+export type MessageSnippetFragment = { __typename?: 'Messages', id: number, owner: string, roomToken: string, message: string };
 
 export type RoomSnippetFragment = { __typename?: 'Room', id: number, owner: number, name: string, token: string, createdAt: any };
 
@@ -235,7 +235,7 @@ export type CreateMessageMutationVariables = Exact<{
 }>;
 
 
-export type CreateMessageMutation = { __typename?: 'Mutation', createMessage: { __typename?: 'Messages', id: number, owner: number, roomToken: string, message: string } };
+export type CreateMessageMutation = { __typename?: 'Mutation', createMessage: { __typename?: 'Messages', id: number, owner: string, roomToken: string, message: string } };
 
 export type RegisterMutationVariables = Exact<{
   username: Scalars['String'];
@@ -250,7 +250,7 @@ export type MessagesByRoomQueryVariables = Exact<{
 }>;
 
 
-export type MessagesByRoomQuery = { __typename?: 'Query', messagesByRoom: Array<{ __typename?: 'Messages', id: number, owner: number, roomToken: string, message: string }> };
+export type MessagesByRoomQuery = { __typename?: 'Query', messagesByRoom: Array<{ __typename?: 'Messages', id: number, owner: string, roomToken: string, message: string }> };
 
 export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 

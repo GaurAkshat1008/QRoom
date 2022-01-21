@@ -16,6 +16,7 @@ exports.MessageResolver = void 0;
 const type_graphql_1 = require("type-graphql");
 const typeorm_1 = require("typeorm");
 const Messages_1 = require("../entities/Messages");
+const User_1 = require("../entities/User");
 const isAuth_1 = require("../middelwares/isAuth");
 let MessageResolver = class MessageResolver {
     async messagesByRoom(token) {
@@ -26,13 +27,14 @@ let MessageResolver = class MessageResolver {
         return messages;
     }
     async createMessage(token, text, { req }) {
+        const user = await User_1.User.findOne(req.session.userId);
         const message = await (0, typeorm_1.getConnection)()
             .createQueryBuilder()
             .insert()
             .into(Messages_1.Messages)
             .values({
             message: text,
-            owner: req.session.userId,
+            owner: user === null || user === void 0 ? void 0 : user.username,
             roomToken: token,
         })
             .returning("*")

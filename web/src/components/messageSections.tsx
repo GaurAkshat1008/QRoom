@@ -25,7 +25,7 @@ export const MessageSections: React.FC<token> = ({token}) => {
     }else{
        body = (
           data.messagesByRoom.map((object) => {
-            return (<MessageBox variant={object.owner === meData.data.me.id ? 'me' : 'they'}>{object.message} {object.owner}</MessageBox>)
+            return (<MessageBox author={object.owner} variant={object.owner === meData.data.me.username ? 'me' : 'they'}>{object.message}</MessageBox>)
           })
        )
     }
