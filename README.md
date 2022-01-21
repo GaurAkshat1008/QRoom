@@ -51,4 +51,10 @@ Live messaging with anyone having them in the same room as yourself
 # Images of the website
 
 ## Register Page
-![register](https://github.com/jueviole-grace/qRoom/blob/master/github%20assets/register%20page.png?raw=true)
+![register](https://github.com/jueviole-grace/qRoom/blob/master/github%20assets/register.png?raw=true)
+
+## Login Page
+![login](https://github.com/jueviole-grace/qRoom/blob/master/github%20assets/login.png?raw=true)
+
+## Home Page
+![Homae Page](https://github.com/jueviole-grace/qRoom/blob/master/github%20assets/home%20page.png?raw=true)
