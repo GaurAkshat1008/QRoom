@@ -45,3 +45,10 @@ Moreover the rooms have an 12 digit uuid attached that makes them hard to be gue
 ### Messaging
 
 Live messaging with anyone having them in the same room as yourself 
+
+
+
+# Images of the website
+
+## Register Page
+![register](https://github.com/jueviole-grace/qRoom/blob/master/github%20assets/register%20page.png?raw=true)
