@@ -1,5 +1,0 @@
-query Room($token:String!){
-  room(token:$token){
-    ...RoomSnippet
-  }
-}

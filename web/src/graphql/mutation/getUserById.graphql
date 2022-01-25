@@ -1,5 +1,0 @@
-mutation UserById($id:Int!) {
-  userById(id:$id){
-    username
-  }
-}

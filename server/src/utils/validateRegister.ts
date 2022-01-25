@@ -1,13 +1,29 @@
 import { Auths } from "./auths";
 
 export const validateRegister = (options:Auths) => {
-  if (options.username.length <= 2) {
+  if (options.username.length <= 2 ) {
     return[
         {
           field: "username",
           message: "username too short",
         },
       ]
+  }
+  if(!!options.username.trim() === false) {
+    return[
+      {
+        field:"username",
+        message:"username cannot be spaces"
+      }
+    ]
+  }
+  if(!!options.password.trim() === false) {
+    return[
+      {
+        field:"password",
+        message:"password cannot be spaces"
+      }
+    ]
   }
 // if (options.username.includes('@')) {
 //     return[

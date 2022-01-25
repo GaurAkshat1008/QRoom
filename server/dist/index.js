@@ -13,22 +13,20 @@ const ioredis_1 = __importDefault(require("ioredis"));
 const type_graphql_1 = require("type-graphql");
 const typeorm_1 = require("typeorm");
 const constants_1 = require("./constants");
-const Messages_1 = require("./entities/Messages");
-const Room_1 = require("./entities/Room");
+const Car_1 = require("./entities/Car");
 const User_1 = require("./entities/User");
+const car_1 = require("./resolvers/car");
 const hello_1 = require("./resolvers/hello");
-const messages_1 = require("./resolvers/messages");
-const room_1 = require("./resolvers/room");
 const user_1 = require("./resolvers/user");
 const main = async () => {
     const conn = await (0, typeorm_1.createConnection)({
         type: "postgres",
-        database: "whatsapp",
-        username: "whatsapp",
+        database: "carsell",
+        username: "carsell",
         password: "akshat",
         logging: !constants_1.__prod__,
         synchronize: true,
-        entities: [User_1.User, Room_1.Room, Messages_1.Messages],
+        entities: [User_1.User, Car_1.Car],
     });
     await conn.runMigrations();
     const app = (0, express_1.default)();
@@ -50,14 +48,14 @@ const main = async () => {
             secure: constants_1.__prod__,
             sameSite: "lax"
         },
-        secret: 'kjbkcbajkcbkjasbc',
+        secret: 'kjabckabckasckjb',
         saveUninitialized: false,
         resave: false
     }));
     const server = new apollo_server_express_1.ApolloServer({
         plugins: [(0, apollo_server_core_1.ApolloServerPluginLandingPageGraphQLPlayground)()],
         schema: await (0, type_graphql_1.buildSchema)({
-            resolvers: [hello_1.HelloResolver, user_1.UserResolver, room_1.RoomResolver, messages_1.MessageResolver],
+            resolvers: [hello_1.HelloResolver, user_1.UserResolver, car_1.CarResolver],
             validate: false,
         }),
         context: ({ req, res }) => ({

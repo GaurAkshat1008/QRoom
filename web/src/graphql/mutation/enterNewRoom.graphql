@@ -1,3 +1,0 @@
-mutation EnterRoom($name:String!, $password:String!, $token:String!){
-  enterRoom(name:$name, password:$password, token:$token)
-}

@@ -1,5 +1,0 @@
-mutation CreateMessage($token:String!, $text:String!){
-  createMessage(token:$token, text:$text){
-    ...MessageSnippet
-  }
-}

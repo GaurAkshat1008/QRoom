@@ -78,7 +78,7 @@ let UserResolver = class UserResolver {
                 .into(User_1.User)
                 .values({
                 username: options.username,
-                password: hashPass
+                password: hashPass,
             })
                 .returning("*")
                 .execute();
@@ -108,9 +108,9 @@ let UserResolver = class UserResolver {
                 errors: [
                     {
                         field: "username",
-                        message: "invalid username"
-                    }
-                ]
+                        message: "invalid username",
+                    },
+                ],
             };
         }
         const valid = await argon2_1.default.verify(user.password, password);
@@ -119,9 +119,9 @@ let UserResolver = class UserResolver {
                 errors: [
                     {
                         field: "password",
-                        message: "password don't match"
-                    }
-                ]
+                        message: "password don't match",
+                    },
+                ],
             };
         }
         req.session.userId = user.id;

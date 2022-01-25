@@ -1,0 +1,11 @@
+query Cars {
+  	cars{
+      id
+      owner
+      modelY
+      carType
+      carModel
+      km
+      desc
+    }
+}

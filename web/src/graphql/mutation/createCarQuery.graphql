@@ -1,0 +1,11 @@
+mutation CreateQuery($owner:String!, $modelY:String!, $carType:String!, $carModel:String!, $km:String!, $desc:String!) {
+  createQuery(options:{owner:$owner, modelY:$modelY, carType:$carType, carModel:$carModel, km:$km, desc:$desc}){
+    id
+    owner
+    modelY
+    carType
+    carModel
+    km
+    desc
+  }
+}

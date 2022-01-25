@@ -1,7 +1,0 @@
-fragment RoomSnippet on Room{
-  id
-    owner
-    name
-    token
-    createdAt
-}

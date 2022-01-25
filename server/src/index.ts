@@ -8,23 +8,21 @@ import Redis from "ioredis";
 import { buildSchema } from "type-graphql";
 import { createConnection } from "typeorm";
 import { COOKIE_NAME, __prod__ } from "./constants";
-import { Messages } from "./entities/Messages";
-import { Room } from "./entities/Room";
+import { Car } from "./entities/Car";
 import { User } from "./entities/User";
+import { CarResolver } from "./resolvers/car";
 import { HelloResolver } from "./resolvers/hello";
-import { MessageResolver } from "./resolvers/messages";
-import { RoomResolver } from "./resolvers/room";
 import { UserResolver } from "./resolvers/user";
 
 const main = async () => {
   const conn = await createConnection({
     type: "postgres",
-    database: "whatsapp",
-    username: "whatsapp",
+    database: "carsell",
+    username: "carsell",
     password: "akshat",
     logging: !__prod__,
     synchronize: true,
-    entities: [User, Room, Messages],
+    entities: [User, Car],
   });
   await conn.runMigrations();
   // Room.delete({})
@@ -52,7 +50,7 @@ const main = async () => {
         secure: __prod__,
         sameSite: "lax"
       },
-      secret:'kjbkcbajkcbkjasbc',
+      secret:'kjabckabckasckjb',
       saveUninitialized:false,
       resave:false
     })
@@ -61,7 +59,7 @@ const main = async () => {
   const server = new ApolloServer({
     plugins: [ApolloServerPluginLandingPageGraphQLPlayground()],
     schema: await buildSchema({
-      resolvers: [HelloResolver, UserResolver, RoomResolver, MessageResolver],
+      resolvers: [HelloResolver, UserResolver, CarResolver],
       validate: false,
     }),
     context: ({ req, res }) => ({

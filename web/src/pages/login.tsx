@@ -3,12 +3,12 @@ import { Form, Formik } from "formik";
 import { useRouter } from "next/router";
 import React from "react";
 import { useLoginMutation } from "../generated/graphql";
-import { toErrorMap } from "../utils/errorMap";
 import NextLink from 'next/link'
-import { Wrapper } from "../components/wrapper";
-import { InputField } from "../components/inputField";
-import { withUrqlClient } from "next-urql";
-import { createURQLClient } from "../utils/createURQLClient";
+import { Wrapper } from "../components/Wrapper";
+import { InputField } from "../components/InputField";
+import { toErrorMap } from "../utils/ErrorMap";
+
+
 
 const Login: React.FC<{}> = ({}) => {
   const router = useRouter();
@@ -31,40 +31,41 @@ const Login: React.FC<{}> = ({}) => {
             }
           }
         }}
-      >
+        >
         {(props) => (
           <Form>
             <InputField
               name="username"
               placeholder="username"
               label="Username"
-            />
+              />
             <Box mt={4}>
               <InputField
                 name="password"
                 placeholder="password"
                 label="Password"
                 type={"password"}
-              />
+                />
             </Box>
             
-            <Flex color={'blue.100'} cursor={'pointer'} mt={2} direction={'column'}>
+            <Flex color={'twiiter.800'} cursor={'pointer'} mt={2} direction={'column'}>
               <NextLink href={'/forgot-password'}><Box ml={'auto'}>Forgot Password?</Box></NextLink>
             <Button
               mt={4}
-              colorScheme="teal"
+              color={'white'}
+              bgGradient="linear(to-l, #7928CA, #FF0080)"
               isLoading={props.isSubmitting}
               type="submit"
-            >
+              >
               Login
             </Button>
-              <NextLink href={'/register'}><Box ml={'auto'} mt={2}>Create a new account</Box></NextLink>
+              <NextLink href={'/register'}><Box  ml={'auto'} mt={2}>Create a new account</Box></NextLink>
             </Flex>            
           </Form>
         )}
       </Formik>
+
     </Wrapper>
   );
 };
-
-export default withUrqlClient(createURQLClient)(Login);
+export default Login
