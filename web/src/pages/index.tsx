@@ -14,6 +14,8 @@ import { Layout } from "../components/layout";
 import { toErrorMap } from "../utils/errorMap";
 import { withUrqlClient } from "next-urql";
 import { createURQLClient } from "../utils/createURQLClient";
+import { DarkModeSwitch } from '../components/DarkModeSwitch';
+
 
 const Index: React.FC<{}> = ({}) => {
   const router = useRouter();
@@ -153,7 +155,7 @@ const Index: React.FC<{}> = ({}) => {
   }
   return (
     <>
-      <Layout variant="regular">{body}</Layout>
+      <Layout variant="regular"><DarkModeSwitch /> {body}</Layout>
     </>
   );
 };
