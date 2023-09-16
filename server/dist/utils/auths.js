@@ -11,7 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Auths = void 0;
 const type_graphql_1 = require("type-graphql");
-let Auths = class Auths {
+let Auths = exports.Auths = class Auths {
 };
 __decorate([
     (0, type_graphql_1.Field)(),
@@ -21,8 +21,7 @@ __decorate([
     (0, type_graphql_1.Field)(),
     __metadata("design:type", String)
 ], Auths.prototype, "password", void 0);
-Auths = __decorate([
+exports.Auths = Auths = __decorate([
     (0, type_graphql_1.InputType)()
 ], Auths);
-exports.Auths = Auths;
 //# sourceMappingURL=auths.js.map

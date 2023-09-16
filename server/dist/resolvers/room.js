@@ -56,7 +56,7 @@ __decorate([
 roomVar = __decorate([
     (0, type_graphql_1.InputType)()
 ], roomVar);
-let RoomResolver = class RoomResolver {
+let RoomResolver = exports.RoomResolver = class RoomResolver {
     async room(token) {
         return await Room_1.Room.findOne({ where: { token: token } });
     }
@@ -195,8 +195,7 @@ __decorate([
     __metadata("design:paramtypes", [Number, Object]),
     __metadata("design:returntype", Promise)
 ], RoomResolver.prototype, "deleteRoom", null);
-RoomResolver = __decorate([
+exports.RoomResolver = RoomResolver = __decorate([
     (0, type_graphql_1.Resolver)(Room_1.Room)
 ], RoomResolver);
-exports.RoomResolver = RoomResolver;
 //# sourceMappingURL=room.js.map

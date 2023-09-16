@@ -22,7 +22,7 @@ export const MessageBox: React.FC<messageBoxProps> = ({
       ml={variant === "me" ? "auto" : "4"}
       border={"2px solid transparent"}
       borderRadius={10}
-      backgroundColor={variant === "me" ? "twitter.500" : "facebook.900"}
+      backgroundColor={variant === "me" ? "red.300" : "red.500"}
     >
         <Box ml={'auto'} fontSize={10} color={'white'} fontWeight={'700'}>~{author}</Box>
       <Box>{children}</Box>

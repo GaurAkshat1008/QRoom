@@ -12,7 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Room = void 0;
 const type_graphql_1 = require("type-graphql");
 const typeorm_1 = require("typeorm");
-let Room = class Room extends typeorm_1.BaseEntity {
+let Room = exports.Room = class Room extends typeorm_1.BaseEntity {
 };
 __decorate([
     (0, type_graphql_1.Field)(),
@@ -43,9 +43,8 @@ __decorate([
     (0, typeorm_1.CreateDateColumn)(),
     __metadata("design:type", Date)
 ], Room.prototype, "createdAt", void 0);
-Room = __decorate([
+exports.Room = Room = __decorate([
     (0, type_graphql_1.ObjectType)(),
     (0, typeorm_1.Entity)()
 ], Room);
-exports.Room = Room;
 //# sourceMappingURL=Room.js.map

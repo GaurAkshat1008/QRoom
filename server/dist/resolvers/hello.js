@@ -11,7 +11,7 @@ var __metadata = (this && this.__metadata) || function (k, v) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.HelloResolver = void 0;
 const type_graphql_1 = require("type-graphql");
-let HelloResolver = class HelloResolver {
+let HelloResolver = exports.HelloResolver = class HelloResolver {
     hello() {
         return "bye";
     }
@@ -22,8 +22,7 @@ __decorate([
     __metadata("design:paramtypes", []),
     __metadata("design:returntype", void 0)
 ], HelloResolver.prototype, "hello", null);
-HelloResolver = __decorate([
+exports.HelloResolver = HelloResolver = __decorate([
     (0, type_graphql_1.Resolver)()
 ], HelloResolver);
-exports.HelloResolver = HelloResolver;
 //# sourceMappingURL=hello.js.map

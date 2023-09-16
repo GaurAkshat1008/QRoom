@@ -23,7 +23,7 @@ const constants_1 = require("../constants");
 const User_1 = require("../entities/User");
 const auths_1 = require("../utils/auths");
 const validateRegister_1 = require("../utils/validateRegister");
-let FieldError = class FieldError {
+let FieldError = exports.FieldError = class FieldError {
 };
 __decorate([
     (0, type_graphql_1.Field)(),
@@ -33,10 +33,9 @@ __decorate([
     (0, type_graphql_1.Field)(),
     __metadata("design:type", String)
 ], FieldError.prototype, "message", void 0);
-FieldError = __decorate([
+exports.FieldError = FieldError = __decorate([
     (0, type_graphql_1.ObjectType)()
 ], FieldError);
-exports.FieldError = FieldError;
 let UserResponse = class UserResponse {
 };
 __decorate([
@@ -50,7 +49,7 @@ __decorate([
 UserResponse = __decorate([
     (0, type_graphql_1.ObjectType)()
 ], UserResponse);
-let UserResolver = class UserResolver {
+let UserResolver = exports.UserResolver = class UserResolver {
     async me({ req }) {
         if (!req.session.userId) {
             return null;
@@ -78,7 +77,7 @@ let UserResolver = class UserResolver {
                 .into(User_1.User)
                 .values({
                 username: options.username,
-                password: hashPass
+                password: hashPass,
             })
                 .returning("*")
                 .execute();
@@ -108,9 +107,9 @@ let UserResolver = class UserResolver {
                 errors: [
                     {
                         field: "username",
-                        message: "invalid username"
-                    }
-                ]
+                        message: "invalid username",
+                    },
+                ],
             };
         }
         const valid = await argon2_1.default.verify(user.password, password);
@@ -119,9 +118,9 @@ let UserResolver = class UserResolver {
                 errors: [
                     {
                         field: "password",
-                        message: "password don't match"
-                    }
-                ]
+                        message: "password don't match",
+                    },
+                ],
             };
         }
         req.session.userId = user.id;
@@ -179,8 +178,7 @@ __decorate([
     __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
 ], UserResolver.prototype, "logout", null);
-UserResolver = __decorate([
+exports.UserResolver = UserResolver = __decorate([
     (0, type_graphql_1.Resolver)(User_1.User)
 ], UserResolver);
-exports.UserResolver = UserResolver;
 //# sourceMappingURL=user.js.map

@@ -5,7 +5,7 @@ const fonts = { mono: `'Menlo', monospace` }
 
 const config:ThemeConfig = {
   initialColorMode: 'light',
-  useSystemColorMode: true,
+  // useSystemColorMode: true,
 }
 
 const breakpoints = createBreakpoints({

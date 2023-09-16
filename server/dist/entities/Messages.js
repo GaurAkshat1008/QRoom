@@ -12,7 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Messages = void 0;
 const type_graphql_1 = require("type-graphql");
 const typeorm_1 = require("typeorm");
-let Messages = class Messages extends typeorm_1.BaseEntity {
+let Messages = exports.Messages = class Messages extends typeorm_1.BaseEntity {
 };
 __decorate([
     (0, type_graphql_1.Field)(),
@@ -34,9 +34,8 @@ __decorate([
     (0, typeorm_1.Column)(),
     __metadata("design:type", String)
 ], Messages.prototype, "message", void 0);
-Messages = __decorate([
+exports.Messages = Messages = __decorate([
     (0, type_graphql_1.ObjectType)(),
     (0, typeorm_1.Entity)()
 ], Messages);
-exports.Messages = Messages;
 //# sourceMappingURL=Messages.js.map

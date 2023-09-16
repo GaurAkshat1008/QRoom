@@ -18,7 +18,7 @@ const typeorm_1 = require("typeorm");
 const Messages_1 = require("../entities/Messages");
 const User_1 = require("../entities/User");
 const isAuth_1 = require("../middelwares/isAuth");
-let MessageResolver = class MessageResolver {
+let MessageResolver = exports.MessageResolver = class MessageResolver {
     async messagesByRoom(token) {
         const messages = await Messages_1.Messages.find({ where: { roomToken: token } });
         if (!messages) {
@@ -60,8 +60,7 @@ __decorate([
     __metadata("design:paramtypes", [String, String, Object]),
     __metadata("design:returntype", Promise)
 ], MessageResolver.prototype, "createMessage", null);
-MessageResolver = __decorate([
+exports.MessageResolver = MessageResolver = __decorate([
     (0, type_graphql_1.Resolver)(Messages_1.Messages)
 ], MessageResolver);
-exports.MessageResolver = MessageResolver;
 //# sourceMappingURL=messages.js.map

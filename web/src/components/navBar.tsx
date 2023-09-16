@@ -38,7 +38,7 @@ export const NavBar: React.FC<NavBarProps> = ({}) => {
           variant={"ghost"}
           onClick={async() => {
             await logout();
-            router.reload()
+            router.replace("/")
           }}
           isLoading={logoutFetching}
         >
@@ -48,7 +48,7 @@ export const NavBar: React.FC<NavBarProps> = ({}) => {
     );
   }
   return (
-    <Flex position={"sticky"} top={0} zIndex={1} bg="#AABBCC" p={4} mb={8}>
+    <Flex color={'#FCF6F5'} position={"sticky"} top={0} zIndex={1} bg="#990011" p={4}>
       <Flex flex={1} m={'auto'} maxW={800} align={'center'}>
       <NextLink href={"/"}>
         <Link>
