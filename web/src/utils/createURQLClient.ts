@@ -1,16 +1,19 @@
+import { Cache, cacheExchange } from "@urql/exchange-graphcache";
 import Router from "next/router";
-import { dedupExchange, Exchange, fetchExchange } from "urql";
-import { cacheExchange } from "@urql/exchange-graphcache";
+import { Exchange, dedupExchange, fetchExchange } from "urql";
 import { pipe, tap } from "wonka";
-import { Cache } from "@urql/exchange-graphcache";
-import { isServer } from "./isServer";
-import { betterUpdateQuery } from "./betterUpdateQuery";
 import {
+  EnterExistingRoomMutation,
+  EnterRoomMutation,
   LoginMutation,
   MeDocument,
   MeQuery,
+  MyRoomDocument,
+  MyRoomQuery,
   RegisterMutation,
 } from "../generated/graphql";
+import { betterUpdateQuery } from "./betterUpdateQuery";
+import { isServer } from "./isServer";
 
 function invalidateMessages(cache: Cache) {
   const allFields = cache.inspectFields("Query");
@@ -100,6 +103,43 @@ export const createURQLClient = (ssrExchange: any, ctx: any) => {
                 }
               );
             },
+            // enterExistingRoom: (
+            //   _result: any,
+            //   args: any,
+            //   cache: Cache,
+            //   info: any
+            // ) => {
+            //   betterUpdateQuery<EnterExistingRoomMutation, MyRoomQuery>(
+            //     cache,
+            //     { query: MyRoomDocument },
+            //     _result,
+            //     (result, query) => {
+            //       if (result.enterExistingRoom.errors) {
+            //         return query;
+            //       } else {
+            //         return {
+            //           myRoom: result.enterExistingRoom.link,
+            //         };
+            //       }
+            //     }
+            //   );
+            // },
+            // enterRoom: (_result: any, args: any, cache: Cache, info: any) => {
+            //   betterUpdateQuery<EnterRoomMutation, MyRoomQuery>(
+            //     cache,
+            //     { query: MyRoomDocument },
+            //     _result,
+            //     (result, query) => {
+            //       if (result.enterRoom.errors) {
+            //         return query;
+            //       } else {
+            //         return {
+            //           myRoom: result.enterRoom.link,
+            //         };
+            //       }
+            //     }
+            //   );
+            // },
           },
         },
       }),

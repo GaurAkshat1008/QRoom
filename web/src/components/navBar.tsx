@@ -5,6 +5,7 @@ import NextLink from "next/link";
 import { useLogoutMutation, useMeQuery } from "../generated/graphql";
 import { isServer } from "../utils/isServer";
 import { useRouter } from "next/router";
+import { DarkModeSwitch } from "./DarkModeSwitch";
 
 interface NavBarProps {}
 
@@ -32,7 +33,7 @@ export const NavBar: React.FC<NavBarProps> = ({}) => {
   } else {
     body = (
       <Flex>
-        <Box mr={3} p={1}>{data.me.username}</Box>
+        <Box as={'a'} href="/profile" mr={3} p={1}>{data.me.username}</Box>
         <Button
           backgroundColor={"red.500"}
           variant={"ghost"}

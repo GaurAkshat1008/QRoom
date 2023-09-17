@@ -18,6 +18,7 @@ export type Scalars = {
 };
 
 export type Auths = {
+  email: Scalars['String'];
   password: Scalars['String'];
   username: Scalars['String'];
 };
@@ -34,6 +35,11 @@ export type LinkProvider = {
   link?: Maybe<Scalars['String']>;
 };
 
+export type LinksProvider = {
+  __typename?: 'LinksProvider';
+  links?: Maybe<Array<Scalars['String']>>;
+};
+
 export type Messages = {
   __typename?: 'Messages';
   id: Scalars['Float'];
@@ -44,16 +50,24 @@ export type Messages = {
 
 export type Mutation = {
   __typename?: 'Mutation';
+  changePassword: UserResponse;
   createMessage: Messages;
   deleteRoom: Scalars['Boolean'];
   enterExistingRoom: LinkProvider;
-  enterRoom: Scalars['String'];
+  enterRoom: LinkProvider;
+  forgotPassword: Scalars['Boolean'];
   login: UserResponse;
   logout: Scalars['Boolean'];
   matchPassword: PasswordMatcher;
   newRoom: Room;
   register: UserResponse;
   userById?: Maybe<User>;
+};
+
+
+export type MutationChangePasswordArgs = {
+  newPassword: Scalars['String'];
+  token: Scalars['String'];
 };
 
 
@@ -81,9 +95,14 @@ export type MutationEnterRoomArgs = {
 };
 
 
+export type MutationForgotPasswordArgs = {
+  email: Scalars['String'];
+};
+
+
 export type MutationLoginArgs = {
   password: Scalars['String'];
-  username: Scalars['String'];
+  usernameOrEmail: Scalars['String'];
 };
 
 
@@ -119,7 +138,9 @@ export type Query = {
   hello: Scalars['String'];
   me?: Maybe<User>;
   messagesByRoom: Array<Messages>;
+  myRoom?: Maybe<Array<Scalars['String']>>;
   room?: Maybe<Room>;
+  roomWithUser: LinksProvider;
   rooms: Array<Room>;
 };
 
@@ -145,6 +166,7 @@ export type Room = {
 export type User = {
   __typename?: 'User';
   createdAt: Scalars['String'];
+  email: Scalars['String'];
   id: Scalars['Float'];
   updatedAt: Scalars['String'];
   username: Scalars['String'];
@@ -161,13 +183,23 @@ export type RoomVar = {
   password: Scalars['String'];
 };
 
-export type AuthSnippetFragment = { __typename?: 'User', id: number, username: string, createdAt: string, updatedAt: string };
+export type AuthSnippetFragment = { __typename?: 'User', id: number, email: string, username: string, createdAt: string, updatedAt: string };
 
 export type RegularErrorFragment = { __typename?: 'FieldError', field: string, message: string };
 
 export type MessageSnippetFragment = { __typename?: 'Messages', id: number, owner: string, roomToken: string, message: string };
 
 export type RoomSnippetFragment = { __typename?: 'Room', id: number, owner: number, name: string, token: string, createdAt: any };
+
+export type RegularUserResponseFragment = { __typename?: 'UserResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined, user?: { __typename?: 'User', id: number, email: string, username: string, createdAt: string, updatedAt: string } | null | undefined };
+
+export type ChangePasswordMutationVariables = Exact<{
+  token: Scalars['String'];
+  newPassword: Scalars['String'];
+}>;
+
+
+export type ChangePasswordMutation = { __typename?: 'Mutation', changePassword: { __typename?: 'UserResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined, user?: { __typename?: 'User', id: number, email: string, username: string, createdAt: string, updatedAt: string } | null | undefined } };
 
 export type NewRoomMutationVariables = Exact<{
   input: RoomVar;
@@ -199,7 +231,14 @@ export type EnterRoomMutationVariables = Exact<{
 }>;
 
 
-export type EnterRoomMutation = { __typename?: 'Mutation', enterRoom: string };
+export type EnterRoomMutation = { __typename?: 'Mutation', enterRoom: { __typename?: 'LinkProvider', link?: string | null | undefined, errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined } };
+
+export type ForgotPasswordMutationVariables = Exact<{
+  email: Scalars['String'];
+}>;
+
+
+export type ForgotPasswordMutation = { __typename?: 'Mutation', forgotPassword: boolean };
 
 export type UserByIdMutationVariables = Exact<{
   id: Scalars['Int'];
@@ -209,12 +248,12 @@ export type UserByIdMutationVariables = Exact<{
 export type UserByIdMutation = { __typename?: 'Mutation', userById?: { __typename?: 'User', username: string } | null | undefined };
 
 export type LoginMutationVariables = Exact<{
-  username: Scalars['String'];
+  usernameOrEmail: Scalars['String'];
   password: Scalars['String'];
 }>;
 
 
-export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'UserResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined, user?: { __typename?: 'User', id: number, username: string, createdAt: string, updatedAt: string } | null | undefined } };
+export type LoginMutation = { __typename?: 'Mutation', login: { __typename?: 'UserResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined, user?: { __typename?: 'User', id: number, email: string, username: string, createdAt: string, updatedAt: string } | null | undefined } };
 
 export type LogoutMutationVariables = Exact<{ [key: string]: never; }>;
 
@@ -239,11 +278,12 @@ export type CreateMessageMutation = { __typename?: 'Mutation', createMessage: { 
 
 export type RegisterMutationVariables = Exact<{
   username: Scalars['String'];
+  email: Scalars['String'];
   password: Scalars['String'];
 }>;
 
 
-export type RegisterMutation = { __typename?: 'Mutation', register: { __typename?: 'UserResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined, user?: { __typename?: 'User', id: number, username: string, createdAt: string, updatedAt: string } | null | undefined } };
+export type RegisterMutation = { __typename?: 'Mutation', register: { __typename?: 'UserResponse', errors?: Array<{ __typename?: 'FieldError', field: string, message: string }> | null | undefined, user?: { __typename?: 'User', id: number, email: string, username: string, createdAt: string, updatedAt: string } | null | undefined } };
 
 export type MessagesByRoomQueryVariables = Exact<{
   token: Scalars['String'];
@@ -257,6 +297,11 @@ export type MeQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type MeQuery = { __typename?: 'Query', me?: { __typename?: 'User', id: number, username: string } | null | undefined };
 
+export type MyRoomQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type MyRoomQuery = { __typename?: 'Query', myRoom?: Array<string> | null | undefined };
+
 export type RoomQueryVariables = Exact<{
   token: Scalars['String'];
 }>;
@@ -264,20 +309,11 @@ export type RoomQueryVariables = Exact<{
 
 export type RoomQuery = { __typename?: 'Query', room?: { __typename?: 'Room', id: number, owner: number, name: string, token: string, createdAt: any } | null | undefined };
 
-export const AuthSnippetFragmentDoc = gql`
-    fragment AuthSnippet on User {
-  id
-  username
-  createdAt
-  updatedAt
-}
-    `;
-export const RegularErrorFragmentDoc = gql`
-    fragment RegularError on FieldError {
-  field
-  message
-}
-    `;
+export type RoomWithUserQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type RoomWithUserQuery = { __typename?: 'Query', roomWithUser: { __typename?: 'LinksProvider', links?: Array<string> | null | undefined } };
+
 export const MessageSnippetFragmentDoc = gql`
     fragment MessageSnippet on Messages {
   id
@@ -295,6 +331,43 @@ export const RoomSnippetFragmentDoc = gql`
   createdAt
 }
     `;
+export const RegularErrorFragmentDoc = gql`
+    fragment RegularError on FieldError {
+  field
+  message
+}
+    `;
+export const AuthSnippetFragmentDoc = gql`
+    fragment AuthSnippet on User {
+  id
+  email
+  username
+  createdAt
+  updatedAt
+}
+    `;
+export const RegularUserResponseFragmentDoc = gql`
+    fragment RegularUserResponse on UserResponse {
+  errors {
+    ...RegularError
+  }
+  user {
+    ...AuthSnippet
+  }
+}
+    ${RegularErrorFragmentDoc}
+${AuthSnippetFragmentDoc}`;
+export const ChangePasswordDocument = gql`
+    mutation ChangePassword($token: String!, $newPassword: String!) {
+  changePassword(token: $token, newPassword: $newPassword) {
+    ...RegularUserResponse
+  }
+}
+    ${RegularUserResponseFragmentDoc}`;
+
+export function useChangePasswordMutation() {
+  return Urql.useMutation<ChangePasswordMutation, ChangePasswordMutationVariables>(ChangePasswordDocument);
+};
 export const NewRoomDocument = gql`
     mutation NewRoom($input: roomVar!, $token: String!) {
   newRoom(input: $input, token: $token) {
@@ -332,12 +405,27 @@ export function useEnterExistingRoomMutation() {
 };
 export const EnterRoomDocument = gql`
     mutation EnterRoom($name: String!, $password: String!, $token: String!) {
-  enterRoom(name: $name, password: $password, token: $token)
+  enterRoom(name: $name, password: $password, token: $token) {
+    link
+    errors {
+      field
+      message
+    }
+  }
 }
     `;
 
 export function useEnterRoomMutation() {
   return Urql.useMutation<EnterRoomMutation, EnterRoomMutationVariables>(EnterRoomDocument);
+};
+export const ForgotPasswordDocument = gql`
+    mutation ForgotPassword($email: String!) {
+  forgotPassword(email: $email)
+}
+    `;
+
+export function useForgotPasswordMutation() {
+  return Urql.useMutation<ForgotPasswordMutation, ForgotPasswordMutationVariables>(ForgotPasswordDocument);
 };
 export const UserByIdDocument = gql`
     mutation UserById($id: Int!) {
@@ -351,8 +439,8 @@ export function useUserByIdMutation() {
   return Urql.useMutation<UserByIdMutation, UserByIdMutationVariables>(UserByIdDocument);
 };
 export const LoginDocument = gql`
-    mutation Login($username: String!, $password: String!) {
-  login(username: $username, password: $password) {
+    mutation Login($usernameOrEmail: String!, $password: String!) {
+  login(usernameOrEmail: $usernameOrEmail, password: $password) {
     errors {
       ...RegularError
     }
@@ -402,8 +490,8 @@ export function useCreateMessageMutation() {
   return Urql.useMutation<CreateMessageMutation, CreateMessageMutationVariables>(CreateMessageDocument);
 };
 export const RegisterDocument = gql`
-    mutation Register($username: String!, $password: String!) {
-  register(options: {username: $username, password: $password}) {
+    mutation Register($username: String!, $email: String!, $password: String!) {
+  register(options: {username: $username, email: $email, password: $password}) {
     errors {
       ...RegularError
     }
@@ -441,6 +529,15 @@ export const MeDocument = gql`
 export function useMeQuery(options: Omit<Urql.UseQueryArgs<MeQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<MeQuery>({ query: MeDocument, ...options });
 };
+export const MyRoomDocument = gql`
+    query MyRoom {
+  myRoom
+}
+    `;
+
+export function useMyRoomQuery(options: Omit<Urql.UseQueryArgs<MyRoomQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<MyRoomQuery>({ query: MyRoomDocument, ...options });
+};
 export const RoomDocument = gql`
     query Room($token: String!) {
   room(token: $token) {
@@ -451,4 +548,15 @@ export const RoomDocument = gql`
 
 export function useRoomQuery(options: Omit<Urql.UseQueryArgs<RoomQueryVariables>, 'query'> = {}) {
   return Urql.useQuery<RoomQuery>({ query: RoomDocument, ...options });
+};
+export const RoomWithUserDocument = gql`
+    query RoomWithUser {
+  roomWithUser {
+    links
+  }
+}
+    `;
+
+export function useRoomWithUserQuery(options: Omit<Urql.UseQueryArgs<RoomWithUserQueryVariables>, 'query'> = {}) {
+  return Urql.useQuery<RoomWithUserQuery>({ query: RoomWithUserDocument, ...options });
 };

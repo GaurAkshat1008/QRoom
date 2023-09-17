@@ -10,6 +10,22 @@ const validateRegister = (options) => {
             },
         ];
     }
+    if (options.username.includes("@")) {
+        return [
+            {
+                field: "username",
+                message: "cannot include @",
+            },
+        ];
+    }
+    if (!options.email.includes("@")) {
+        return [
+            {
+                field: "email",
+                message: "invlaid email",
+            },
+        ];
+    }
     if (options.password.length <= 3) {
         return [
             {

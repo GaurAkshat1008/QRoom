@@ -27,6 +27,7 @@ const main = async () => {
     entities: [User, Room, Messages],
   });
   await conn.runMigrations();
+  // User.delete({})
   // Room.delete({})
   // Messages.delete({})
   const app = express();

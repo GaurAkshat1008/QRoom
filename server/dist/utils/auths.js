@@ -20,6 +20,10 @@ __decorate([
 __decorate([
     (0, type_graphql_1.Field)(),
     __metadata("design:type", String)
+], Auths.prototype, "email", void 0);
+__decorate([
+    (0, type_graphql_1.Field)(),
+    __metadata("design:type", String)
 ], Auths.prototype, "password", void 0);
 exports.Auths = Auths = __decorate([
     (0, type_graphql_1.InputType)()

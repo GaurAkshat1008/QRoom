@@ -10,11 +10,13 @@ import {
   Resolver,
 } from "type-graphql";
 import { getConnection } from "typeorm";
-import { COOKIE_NAME } from "../constants";
+import { COOKIE_NAME, FORGET_PASSWORD_PREFIX } from "../constants";
 import { User } from "../entities/User";
 import { MyContext } from "../types";
 import { Auths } from "../utils/auths";
 import { validateRegister } from "../utils/validateRegister";
+import { v4 } from "uuid";
+import { sendEmail } from "../utils/sendEmails";
 
 @ObjectType()
 export class FieldError {
@@ -39,7 +41,7 @@ export class UserResolver {
     if (!req.session.userId) {
       return null;
     }
-    return User.findOne(req.session.userId);
+    return await User.findOne(req.session.userId);
   }
 
   @Mutation(() => User, { nullable: true })
@@ -69,6 +71,7 @@ export class UserResolver {
         .into(User)
         .values({
           username: options.username,
+          email: options.email,
           password: hashPass,
         })
         .returning("*")
@@ -94,11 +97,17 @@ export class UserResolver {
   }
   @Mutation(() => UserResponse)
   async login(
-    @Arg("username") username: string,
+    @Arg("usernameOrEmail") usernameOrEmail: string,
     @Arg("password") password: string,
     @Ctx() { req }: MyContext
   ): Promise<UserResponse> {
-    const user = await User.findOne({ where: { username: username } });
+    const user = await User.findOne(
+      usernameOrEmail.includes("@")
+        ? { where: { email: usernameOrEmail } }
+        : {
+            where: { username: usernameOrEmail },
+          }
+    );
     if (!user) {
       return {
         errors: [
@@ -138,5 +147,81 @@ export class UserResolver {
         resolve(true);
       })
     );
+  }
+  @Mutation(() => UserResponse)
+  async changePassword(
+    @Arg("token") token: string,
+    @Arg("newPassword") newPassword: string,
+    @Ctx() { redis, req }: MyContext
+  ): Promise<UserResponse> {
+    if (newPassword.length <= 3) {
+      return {
+        errors: [
+          {
+            field: "newPassword",
+            message: "password too short",
+          },
+        ],
+      };
+    }
+    const key = FORGET_PASSWORD_PREFIX + token;
+    const userId = await redis.get(key);
+    if (!userId) {
+      return {
+        errors: [
+          {
+            field: "token",
+            message: "token expired",
+          },
+        ],
+      };
+    }
+    const userIdNum = parseInt(userId);
+    const user = await User.findOne(userIdNum);
+    if (!user) {
+      return {
+        errors: [
+          {
+            field: "token",
+            message: "user no longer exists",
+          },
+        ],
+      };
+    }
+    await User.update(
+      { id: userIdNum },
+      { password: await argon2.hash(newPassword) }
+    );
+    await redis.del(key);
+    // login user after change password
+    req.session.userId = user.id;
+
+    return { user };
+  }
+
+  @Mutation(() => Boolean)
+  async forgotPassword(
+    @Arg("email") email: string,
+    @Ctx() { redis }: MyContext
+  ) {
+    const user = await User.findOne({ where: { email } });
+    if (!user) {
+      //the email is not in the db
+      return true;
+    }
+    const token = v4();
+
+    await redis.set(
+      FORGET_PASSWORD_PREFIX + token,
+      user.id,
+      "ex",
+      1000 * 60 * 60 * 24 * 3
+    ); // available for 3 days
+
+    sendEmail(
+      email,
+      `<a href="http://localhost:3000/change-password/${token}">Reset Password</a>`
+    );
+    return true;
   }
 }

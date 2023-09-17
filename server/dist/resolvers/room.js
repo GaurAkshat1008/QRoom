@@ -30,6 +30,15 @@ __decorate([
 LinkProvider = __decorate([
     (0, type_graphql_1.ObjectType)()
 ], LinkProvider);
+let LinksProvider = class LinksProvider {
+};
+__decorate([
+    (0, type_graphql_1.Field)(() => [String], { nullable: true }),
+    __metadata("design:type", Array)
+], LinksProvider.prototype, "links", void 0);
+LinksProvider = __decorate([
+    (0, type_graphql_1.ObjectType)()
+], LinksProvider);
 let PasswordMatcher = class PasswordMatcher {
 };
 __decorate([
@@ -57,6 +66,13 @@ roomVar = __decorate([
     (0, type_graphql_1.InputType)()
 ], roomVar);
 let RoomResolver = exports.RoomResolver = class RoomResolver {
+    async myRoom({ req }) {
+        if (!req.session.roomId) {
+            return null;
+        }
+        const rooms = await Room_1.Room.findByIds(req.session.roomId);
+        return rooms.map((room) => room.token);
+    }
     async room(token) {
         return await Room_1.Room.findOne({ where: { token: token } });
     }
@@ -66,12 +82,27 @@ let RoomResolver = exports.RoomResolver = class RoomResolver {
     async newRoom(input, token, { req }) {
         return Room_1.Room.create(Object.assign(Object.assign({}, input), { owner: req.session.userId, token: token })).save();
     }
+    async roomWithUser({ req }) {
+        const rooms = await Room_1.Room.find({ where: { owner: req.session.userId } });
+        if (rooms.length === 0) {
+            return {};
+        }
+        const links = rooms.map((room) => `http://localhost:3000/rooms/${room.token}`);
+        return { links };
+    }
     async enterRoom(name, password, token) {
         const room = await Room_1.Room.findOne({ where: { name, password } });
         if (!room) {
-            return "/";
+            return {
+                errors: [
+                    {
+                        field: "roomName",
+                        message: "no room found",
+                    },
+                ],
+            };
         }
-        return `http://localhost:3000/rooms/${token}`;
+        return { link: `http://localhost:3000/rooms/${token}` };
     }
     async enterExistingRoom(name, password) {
         const room = await Room_1.Room.findOne({ where: { name } });
@@ -80,9 +111,9 @@ let RoomResolver = exports.RoomResolver = class RoomResolver {
                 errors: [
                     {
                         field: "roomName",
-                        message: "no room found"
-                    }
-                ]
+                        message: "no room found",
+                    },
+                ],
             };
         }
         else if (room.password !== password) {
@@ -90,34 +121,35 @@ let RoomResolver = exports.RoomResolver = class RoomResolver {
                 errors: [
                     {
                         field: "password",
-                        message: "password is not correct"
-                    }
-                ]
+                        message: "password is not correct",
+                    },
+                ],
             };
         }
         return { link: `http://localhost:3000/rooms/${room.token}` };
     }
-    async matchPassword(token, password, { req }) {
+    async matchPassword(token, password) {
         const room = await Room_1.Room.findOne({ where: { token } });
         if (!room) {
             return {
                 errors: [
                     {
                         field: "password",
-                        message: "room not found"
-                    }
-                ]
+                        message: "room not found",
+                    },
+                ],
             };
         }
         if (room.password !== password) {
             return {
-                errors: [{
+                errors: [
+                    {
                         field: "password",
-                        message: "password incorrect"
-                    }]
+                        message: "password incorrect",
+                    },
+                ],
             };
         }
-        req.session.roomId = room.id;
         return { isThere: true };
     }
     async deleteRoom(id, { req }) {
@@ -126,12 +158,20 @@ let RoomResolver = exports.RoomResolver = class RoomResolver {
             return false;
         }
         if (room.owner !== req.session.userId) {
-            throw Error('not Autherised');
+            throw Error("not Autherised");
         }
         await Room_1.Room.delete(id);
         return true;
     }
 };
+__decorate([
+    (0, type_graphql_1.Query)(() => [String], { nullable: true }),
+    (0, type_graphql_1.UseMiddleware)(isAuth_1.isAuth),
+    __param(0, (0, type_graphql_1.Ctx)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], RoomResolver.prototype, "myRoom", null);
 __decorate([
     (0, type_graphql_1.Query)(() => Room_1.Room, { nullable: true }),
     (0, type_graphql_1.UseMiddleware)(isAuth_1.isAuth),
@@ -158,7 +198,15 @@ __decorate([
     __metadata("design:returntype", Promise)
 ], RoomResolver.prototype, "newRoom", null);
 __decorate([
-    (0, type_graphql_1.Mutation)(() => String),
+    (0, type_graphql_1.Query)(() => LinksProvider),
+    (0, type_graphql_1.UseMiddleware)(isAuth_1.isAuth),
+    __param(0, (0, type_graphql_1.Ctx)()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], RoomResolver.prototype, "roomWithUser", null);
+__decorate([
+    (0, type_graphql_1.Mutation)(() => LinkProvider),
     (0, type_graphql_1.UseMiddleware)(isAuth_1.isAuth),
     __param(0, (0, type_graphql_1.Arg)("name")),
     __param(1, (0, type_graphql_1.Arg)("password")),
@@ -181,9 +229,8 @@ __decorate([
     (0, type_graphql_1.UseMiddleware)(isAuth_1.isAuth),
     __param(0, (0, type_graphql_1.Arg)("token")),
     __param(1, (0, type_graphql_1.Arg)("password")),
-    __param(2, (0, type_graphql_1.Ctx)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String, Object]),
+    __metadata("design:paramtypes", [String, String]),
     __metadata("design:returntype", Promise)
 ], RoomResolver.prototype, "matchPassword", null);
 __decorate([

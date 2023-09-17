@@ -1,5 +1,6 @@
 fragment AuthSnippet on User{
   id
+  email
       username
       createdAt
       updatedAt

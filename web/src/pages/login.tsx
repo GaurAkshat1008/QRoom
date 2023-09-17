@@ -1,14 +1,13 @@
 import { Box, Button, Flex } from "@chakra-ui/react";
 import { Form, Formik } from "formik";
+import { withUrqlClient } from "next-urql";
+import NextLink from "next/link";
 import { useRouter } from "next/router";
 import React from "react";
-import { useLoginMutation } from "../generated/graphql";
-import { toErrorMap } from "../utils/errorMap";
-import NextLink from "next/link";
-import { Wrapper } from "../components/wrapper";
 import { InputField } from "../components/inputField";
-import { withUrqlClient } from "next-urql";
+import { useLoginMutation } from "../generated/graphql";
 import { createURQLClient } from "../utils/createURQLClient";
+import { toErrorMap } from "../utils/errorMap";
 
 const Login: React.FC<{}> = ({}) => {
   const router = useRouter();
@@ -17,7 +16,7 @@ const Login: React.FC<{}> = ({}) => {
     <Flex p={2} h={"100vh"}>
       <Box flex={0.4} p={40}>
         <Formik
-          initialValues={{ username: "", password: "" }}
+          initialValues={{ usernameOrEmail: "", password: "" }}
           onSubmit={async (values, { setErrors }) => {
             const response = await login(values);
             if (response.data?.login.errors) {
@@ -35,9 +34,9 @@ const Login: React.FC<{}> = ({}) => {
           {(props) => (
             <Form>
               <InputField
-                name="username"
-                placeholder="username"
-                label="Username"
+                name="usernameOrEmail"
+                placeholder="username or email"
+                label="Username or Email"
               />
               <Box mt={4}>
                 <InputField
@@ -76,7 +75,9 @@ const Login: React.FC<{}> = ({}) => {
           )}
         </Formik>
       </Box>
-      <Box flex={0.6} w={"100%"} backgroundColor={"#FCF6F5"}></Box>
+      <Box flex={0.6} w={"100%"} backgroundColor={"#FCF6F5"}>
+            <Box as={'img'} src="/images/spikes.png" w={'100%'}></Box>
+      </Box>
     </Flex>
   );
 };

@@ -18,13 +18,16 @@ const Register: React.FC<{}> = ({}) => {
   const [, register] = useRegisterMutation();
   return (
     <Flex p={2} h={"100vh"}>
-      <Box flex={0.6} w={"100%"} backgroundColor={"#FCF6F5"}></Box>
+      <Box flex={0.6} w={"100%"} backgroundColor={"#FCF6F5"}>
+        <Box as={"img"} src="/images/spikes.png" w={"100%"} />
+      </Box>
       <Box flex={0.4} p={40} borderRight={"1px solid #990011"}>
         <Formik
-          initialValues={{ username: "", password: "" }}
+          initialValues={{ username: "", email: "", password: "" }}
           onSubmit={async (values, { setErrors }) => {
             const response = await register({
               username: values.username,
+              email: values.email,
               password: values.password,
             });
             if (response.data?.register.errors) {
@@ -37,6 +40,11 @@ const Register: React.FC<{}> = ({}) => {
         >
           {(props) => (
             <Form>
+              <InputField
+                name="email"
+                placeholder="email"
+                label="Email"
+              />
               <InputField
                 name="username"
                 placeholder="username"

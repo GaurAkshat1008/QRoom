@@ -5,5 +5,7 @@ export class Auths {
   @Field()
   username: string;
   @Field()
+  email: string;
+  @Field()
   password: string;
 }

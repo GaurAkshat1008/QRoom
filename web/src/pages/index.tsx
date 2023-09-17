@@ -5,12 +5,14 @@ import React from "react";
 import { CreateJoinRoom } from "../components/CreateJoinRoom";
 import { Layout } from "../components/layout";
 import {
-  useMeQuery
+  useMeQuery, useMyRoomQuery
 } from "../generated/graphql";
 import { createURQLClient } from "../utils/createURQLClient";
 
 const Index: React.FC<{}> = ({}) => {
   const [{ data, fetching }] = useMeQuery();
+  const [myRoom] = useMyRoomQuery();
+  console.log(myRoom.data);
 
   let body = null;
   if (fetching) {

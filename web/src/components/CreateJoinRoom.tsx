@@ -35,8 +35,8 @@ export const CreateJoinRoom = () => {
                   password: values.password,
                   token: token,
                 });
-                router.push(`${url.data.enterRoom}`);
-                // console.log(url.data.enterRoom);
+                  console.log(url.data)                 
+                  router.push(`${url.data.enterRoom.link}`);
               }
             } else {
               setErrors({
@@ -95,7 +95,9 @@ export const CreateJoinRoom = () => {
                 console.log(url.data.enterExistingRoom.errors);
                 setErrors(toErrorMap(url.data.enterExistingRoom.errors));
               } else if (url.data.enterExistingRoom.link) {
-                router.push(`${url.data?.enterExistingRoom.link}`);
+                // setTimeout(() => {
+                  router.push(`${url.data?.enterExistingRoom.link}`);
+                // }, 1500);
               }
             } else {
               setErrors({ roomName: "cannot be empty" });
